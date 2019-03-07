@@ -10,14 +10,14 @@ buildscript {
 
   dependencies {
      classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.0',
-               'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0',
+//               'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0',
                'org.zeroturnaround:gradle-jrebel-plugin:1.1.2',
                'org.springframework.boot:spring-boot-gradle-plugin:1.1.6.RELEASE' // also change springDataJpaVersion below
   }
 }
 
 apply plugin: 'rebel'
-apply plugin: 'license'
+//apply plugin: 'license'
 apply plugin: 'war'
 apply plugin: 'spring-boot'
 apply plugin: 'eclipse'
@@ -109,7 +109,7 @@ task dist(type:Zip){
         include '**/*'
         into('database/migrations')
     }
-    
+
     from war.outputs.files
     into(baseName + '-' + version)
 }
@@ -118,11 +118,11 @@ war {
     war.finalizedBy(bootRepackage)
 }
 
-license {
-    header rootProject.file('../LICENSE.md')
-    excludes(["**/*.html", "**/*.mustache", "**/*.sql", "**/package-info.java", "**/keystore.jks"])
-    strictCheck true
-}
+//license {
+//    header rootProject.file('../LICENSE.md')
+//    excludes(["**/*.html", "**/*.mustache", "**/*.sql", "**/package-info.java", "**/keystore.jks"])
+//    strictCheck true
+//}
 
 tomcatRun {
     httpPort = 8080
@@ -254,7 +254,7 @@ task migrateTenantDB<<{
     if (rootProject.hasProperty("dbName")) {
 		tenantDbName = rootProject.getProperty("dbName")
 	}
-	
+
     flyway.url= "jdbc:mysql://localhost:3306/$tenantDbName"
     flyway.locations= [filePath]
     /**We use ${ as the prefix for strecthy reporting, do not want them to be interpreted by Flyway**/
@@ -264,13 +264,13 @@ task migrateTenantDB<<{
 
 task showTenantDBInfo<<{
     description="Shows the migration info for a Tenant DB. Optionally can pass dbName. Defaults to 'mifostenant-default' (Example: -PdbName=someTenantDBname)"
-    
+
 	def filePath = "filesystem:$projectDir" + '/src/main/resources/sql/migrations/core_db'
     def tenantDbName = 'mifostenant-default';
     if (rootProject.hasProperty("dbName")) {
 		tenantDbName = rootProject.getProperty("dbName")
 	}
-	
+
     flyway.url= "jdbc:mysql://localhost:3306/$tenantDbName"
     flyway.locations= [filePath]
     flywayInfo.execute()
@@ -285,7 +285,7 @@ task migrateTenantListDB<<{
     if (rootProject.hasProperty("dbName")) {
 		tenantsDbName = rootProject.getProperty("dbName")
 	}
-	
+
     flyway.url= "jdbc:mysql://localhost:3306/$tenantsDbName"
     flyway.locations= [filePath]
 
@@ -294,13 +294,13 @@ task migrateTenantListDB<<{
 
 task showTenantListDBInfo<<{
     description="Shows the migration info for a List DB. Optionally can pass dbName. Defaults to 'mifosplatform-tenants' (Example: -PdbName=someDBname)"
-    
+
 	def filePath = "filesystem:$projectDir" + '/src/main/resources/sql/migrations/list_db'
     def tenantsDbName = 'mifosplatform-tenants';
     if (rootProject.hasProperty("dbName")) {
 		tenantsDbName = rootProject.getProperty("dbName")
 	}
-    
+
     flyway.url= "jdbc:mysql://localhost:3306/$tenantsDbName"
     flyway.locations= [filePath]
     flywayInfo.execute()
@@ -308,13 +308,13 @@ task showTenantListDBInfo<<{
 
 task repairTenantDB<<{
     description="repair migrate"
-    
+
 	def filePath = "filesystem:$projectDir" + '/src/main/resources/sql/migrations/list_db'
     def tenantsDbName = 'mifosplatform-tenants';
     if (rootProject.hasProperty("dbName")) {
         tenantsDbName = rootProject.getProperty("dbName")
     }
-    
+
     flyway.url= "jdbc:mysql://localhost:3306/$tenantsDbName"
     flyway.locations= [filePath]
     flywayRepair.execute()
